@@ -52,6 +52,11 @@ describe 'an app for controlling a thermostat' do
         subject { thermostat_requirement.satisfied? }
         it { is_expected.to eq true }
       end
+
+      describe 'the app is compatible now' do
+        subject { app.compatible? }
+        it { is_expected.to eq true }
+      end
     end
   end
 end

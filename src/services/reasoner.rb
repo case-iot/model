@@ -12,6 +12,10 @@ class Reasoner
     result.query([ LV.condition, LV.was, LV.true ]).size == 1
   end
 
+  # implication doesn't work well when a blank node is used in the
+  # condition, e.g.:
+  # {?device1 <http://...#type> _:vehicle .} => {...}
+  # will always result in the postcondition, because of _:vehicle
   def imply(precondition, postcondition)
     eye_input = EyeSerializer.serialize_implication(
       facts_only,

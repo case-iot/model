@@ -23,6 +23,7 @@ class Application
   def requirements_satisfied?
     not failed_requirements.any?
   end
+  alias compatible? requirements_satisfied?
 
   def open_questions
     with_question = requirements.select { |r| r.has_question? }
@@ -32,9 +33,5 @@ class Application
 
   def description
     query.value(LV.description)
-  end
-
-  def compatible?
-    AppCompatibilityReasoner.new(self).compatible?
   end
 end
