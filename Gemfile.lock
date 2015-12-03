@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    link_header (0.0.8)
+    rdf (1.99.0)
+      link_header (~> 0.0, >= 0.0.8)
+    rdf-n3 (1.99.0)
+      rdf (~> 1.99)
+    rdf-vocab (0.8.7.1)
+      rdf (~> 1.1, >= 1.1.10)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rdf-n3 (= 1.99.0)
+  rdf-vocab (= 0.8.7.1)
