@@ -1,0 +1,14 @@
+# KITCHEN MOVEMENT SENSOR
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://140.129.123.12/>.
+
+local:sensor a case:Device;
+  a case:sensor;
+  case:senses case:movement;
+  case:subscribe_url local:subscribe;
+  case:located_at [
+    a case:location;
+    case:location_name "Kitchen"
+  ];
+  case:manufacturer_name "Panasonic".

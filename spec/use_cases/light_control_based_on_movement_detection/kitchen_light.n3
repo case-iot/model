@@ -1,0 +1,13 @@
+# KITCHEN LIGHT
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://140.129.133.21/>.
+
+local:light a case:Device;
+  a case:light;
+  case:turn_on_url local:turn_on;
+  case:located_at [
+    a case:location;
+    case:location_name "Kitchen"
+  ];
+  case:manufacturer_name "Philips".

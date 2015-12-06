@@ -22,7 +22,7 @@ class QuestionVocabulary
   end
 
   def self.uri_for(name)
-    RDF::URI("http://matus.tomlein.org/case/questions/#{name}")
+    RDF::URI("http://matus.tomlein.org/case/#{name}")
   end
 end
 

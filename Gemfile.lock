@@ -1,13 +1,35 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.3.8)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
+    domain_name (0.5.25)
+      unf (>= 0.0.5, < 1.0.0)
+    hashdiff (0.2.3)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     link_header (0.0.8)
+    mime-types (2.99)
+    netrc (0.11.0)
     rdf (1.99.0)
       link_header (~> 0.0, >= 0.0.8)
     rdf-n3 (1.99.0)
       rdf (~> 1.99)
     rdf-vocab (0.8.7.1)
       rdf (~> 1.1, >= 1.1.10)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    safe_yaml (1.0.4)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
+    webmock (1.22.3)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
 
 PLATFORMS
   ruby
@@ -15,3 +37,5 @@ PLATFORMS
 DEPENDENCIES
   rdf-n3 (= 1.99.0)
   rdf-vocab (= 0.8.7.1)
+  rest-client (= 1.8.0)
+  webmock (= 1.22.3)

@@ -1,4 +1,4 @@
-require_relative '../spec_helper'
+require_relative 'spec_helper'
 
 describe 'an app for controlling a thermostat' do
 
@@ -6,15 +6,14 @@ describe 'an app for controlling a thermostat' do
   let(:ontology) { Ontology.new(repo) }
 
   before { load_app_definition(repo) }
-
   let(:app) { ontology.applications.first }
-
-  let(:open_question) { app.open_questions.first }
 
   describe 'the app not compatible yet' do
     subject { app.compatible? }
     it { is_expected.to eq false }
   end
+
+  let(:open_question) { app.open_questions.first }
 
   describe 'there is an unanswered question' do
     subject { open_question.text }
@@ -46,7 +45,6 @@ describe 'an app for controlling a thermostat' do
 
     describe 'starting the thermostat' do
       before { load_thermostat_definition(repo) }
-      let(:thermostat) { ontology.devices.first }
 
       describe 'the requirement is satisfied' do
         subject { thermostat_requirement.satisfied? }
@@ -57,14 +55,16 @@ describe 'an app for controlling a thermostat' do
         subject { app.compatible? }
         it { is_expected.to eq true }
       end
+
+      describe 'installing the app' do
+        before { stub_request(:post, 'http://140.129.123.12/install') }
+        before { app.install }
+
+        it 'made a request with the desired temperature' do
+          expect(WebMock).to have_requested(:post, 'http://140.129.123.12/install').
+            with(body: '22')
+        end
+      end
     end
   end
-end
-
-def load_thermostat_definition(repo)
-  read_def(repo, File.dirname(__FILE__) + '/thermostat.n3')
-end
-
-def load_app_definition(repo)
-  read_def(repo, File.dirname(__FILE__) + '/thermostat_control_app.n3')
 end

@@ -1,0 +1,48 @@
+# app for controlling the thermostat
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix question: <http://matus.tomlein.org/case/>.
+@prefix http: <http://www.w3.org/2011/http#>.
+
+@forAll :thermostat.
+@forAll :answer.
+@forAll :temperature.
+
+_:question a question:Question;
+  question:text "What is the target temperature?";
+  question:replyType question:temperature.
+
+[
+  a case:Application;
+  case:name "TempControllerPro";
+  case:description "An app for controlling the temperature based on the given setpoint";
+  case:requirement (
+    [
+      case:description "Question not answered";
+      case:requires_answering _:question
+    ]
+    [
+      case:description "Thermostat needed";
+      case:condition {
+        :thermostat a case:Device; a case:thermostat.
+      }
+    ]
+  );
+  case:installation (
+    [
+      case:description "Activate the device with the temperature";
+      case:given {
+        :thermostat a case:Device; a case:thermostat.
+        :answer question:answers _:question.
+        :answer case:in_celsius :temperature.
+      };
+      case:execute {
+        [
+          http:methodName "POST";
+          http:body :temperature;
+          http:requestURI <http://140.129.123.12/install>
+        ]
+      }
+    ]
+  )
+]

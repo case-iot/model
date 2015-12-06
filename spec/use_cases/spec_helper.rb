@@ -7,12 +7,22 @@ def read_def(repo, path)
       # full path to the folder, which Eye couldn't reason about
       # so here, the name is shortened to remove the path
       if statement.subject.variable?
-        full_name = statement.subject.to_s
-        var_name = full_name.split('#').last.to_sym
-        statement.subject = RDF::Query::Variable.new(var_name)
+        statement.subject = process_var_name(statement.subject)
+      end
+      if statement.predicate.variable?
+        statement.predicate = process_var_name(statement.predicate)
+      end
+      if statement.object.variable?
+        statement.object = process_var_name(statement.object)
       end
       repo << statement
     end
   end
   repo
+end
+
+def process_var_name(object)
+  full_name = object.to_s
+  var_name = full_name.split('#').last.to_sym
+  RDF::Query::Variable.new(var_name)
 end

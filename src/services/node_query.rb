@@ -20,7 +20,18 @@ class NodeQuery
   end
 
   def set_value(predicate, object)
-    repository.delete([ node, predicate, nil ])
+    delete_value(predicate)
     @repository << [ node, predicate, object ]
+  end
+
+  private
+
+  def delete_value(predicate)
+    # makes sure not to delete any values in subgraphs
+    repository.query([ node, predicate, nil ]).select do |s|
+      s.graph_name.nil?
+    end.each do |s|
+      repository.delete(s)
+    end
   end
 end

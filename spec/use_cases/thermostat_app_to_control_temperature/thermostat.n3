@@ -1,0 +1,7 @@
+# THERMOSTAT DESCRIPTION
+
+@prefix case: <http://matus.tomlein.org/case/>.
+
+case:nest10000 a case:Device;
+  a case:thermostat;
+  case:manufacturer_name "Grundfos".
