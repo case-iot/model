@@ -1,0 +1,6 @@
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+
+local:irrigator a case:Irrigator;
+  case:description "Irrigator";
+  case:irrigatorType case:centralPivot.

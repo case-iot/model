@@ -5,6 +5,8 @@ class QuestionReplyType
       :location
     when QV.temperature
       :temperature
+    when QV.select
+      :select
     else
       nil
     end

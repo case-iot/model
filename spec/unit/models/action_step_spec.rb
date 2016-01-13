@@ -1,9 +1,9 @@
 require_relative '../spec_helper'
 
-describe InstallationStep do
+describe ActionStep do
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
-  let(:installation_step) { InstallationStep.new(:install, repo) }
+  let(:installation_step) { ActionStep.new(:install, repo) }
 
   before do
     repo << [ :install, LV.description, 'This will install something' ]

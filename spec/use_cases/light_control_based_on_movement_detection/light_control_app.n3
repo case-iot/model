@@ -21,64 +21,64 @@ local:question a question:Question;
   case:name "LightMovement";
   case:description "An app that turns the light on when there is a movement";
 
-  case:requirement (
+  case:actions (
     [
-      case:description "Question not answered";
-      case:requires_answering local:question
-    ]
+      case:description "Install";
+      case:requirement (
+        [
+          case:description "Movement sensor needed";
+          case:requires_answering local:question;
+          case:condition {
+            :sensor a case:Device;
+              a case:sensor;
+              case:senses case:movement;
+              case:located_at [ case:location_name :place ].
 
-    [
-      case:description "Movement sensor needed";
-      case:requires_answering local:question;
-      case:condition {
-        :sensor a case:Device;
-          a case:sensor;
-          case:senses case:movement;
-          case:located_at [ case:location_name :place ].
+            :answer question:answers local:question;
+              case:location_name :place.
+          }
+        ]
 
-        :answer question:answers local:question;
-          case:location_name :place.
-      }
-    ]
+        [
+          case:description "Light needed";
+          case:requires_answering local:question;
+          case:condition {
+            :light a case:Device;
+              a case:light;
+              case:located_at [ case:location_name :place ].
 
-    [
-      case:description "Movement sensor needed";
-      case:requires_answering local:question;
-      case:condition {
-        :light a case:Device;
-          a case:light;
-          case:located_at [ case:location_name :place ].
+            :answer question:answers local:question;
+              case:location_name :place.
+          }
+        ]
+      );
 
-        :answer question:answers local:question;
-          case:location_name :place.
-      }
+      case:steps (
+        [
+          case:description "Subscribe the light to the sensor";
+          case:given {
+            :answer question:answers local:question;
+              case:location_name :place.
+
+            :light a case:Device;
+              a case:light;
+              case:located_at [ case:location_name :place ];
+              case:turn_on_url :notify_url.
+
+            :sensor a case:sensor;
+              case:senses case:movement;
+              case:located_at [ case:location_name :place ];
+              case:subscribe_url :subscribe_url.
+          };
+          case:execute {
+            [
+              http:methodName "POST";
+              http:body :notify_url;
+              http:requestURI :subscribe_url
+            ]
+          }
+        ]
+      )
     ]
   );
-
-  case:installation (
-    [
-      case:description "Subscribe the light to the sensor";
-      case:given {
-        :answer question:answers local:question;
-          case:location_name :place.
-
-        :light a case:Device;
-          a case:light;
-          case:located_at [ case:location_name :place ];
-          case:turn_on_url :notify_url.
-
-        :sensor a case:sensor;
-          case:senses case:movement;
-          case:located_at [ case:location_name :place ];
-          case:subscribe_url :subscribe_url.
-      };
-      case:execute {
-        [
-          http:methodName "POST";
-          http:body :notify_url;
-          http:requestURI :subscribe_url
-        ]
-      }
-    ]
-  )
 ]

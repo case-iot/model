@@ -1,4 +1,4 @@
-class InstallationStep
+class ActionStep
   attr_reader :query
 
   def initialize(node, repository)
@@ -20,9 +20,7 @@ class InstallationStep
     repo = implied_repository
     statements = repo.query([ nil, HttpVocabulary.method_name, nil ])
 
-    statements.map do |statement|
-      HttpRequest.new(statement.subject, repo)
-    end
+    statements.map { |statement| HttpRequest.new(statement.subject, repo) }
   end
 
   def execute

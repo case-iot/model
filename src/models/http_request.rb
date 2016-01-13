@@ -20,7 +20,7 @@ class HttpRequest
   end
 
   def execute
-    raise 'Unsupported method' unless method_name == 'POST'
+    raise "Unsupported method #{method_name}" unless method_name == 'POST'
     RestClient.post(uri.to_s, body.to_s)
     true
   end

@@ -54,4 +54,23 @@ describe Reasoner do
       end
     end
   end
+
+  context '#load_and_process_n3' do
+    let(:n3_input) { '@prefix c: <http://matus.tomlein.org/case/>.
+                     c:dog c:likes c:cat.
+                     { ?dog c:likes ?cat } => { ?cat c:likes ?dog }.' }
+    let(:repo) { RDF::Repository.new }
+
+    before { reasoner.load_and_process_n3(n3_input) }
+
+    describe 'the known fact' do
+      subject { repo.query([LV.dog, LV.likes, LV.cat]).any? }
+      it { is_expected.to eq true }
+    end
+
+    describe 'the implied fact' do
+      subject { repo.query([LV.cat, LV.likes, LV.dog]).any? }
+      it { is_expected.to eq true }
+    end
+  end
 end

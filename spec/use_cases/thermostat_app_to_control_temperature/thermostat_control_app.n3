@@ -2,47 +2,60 @@
 
 @prefix case: <http://matus.tomlein.org/case/>.
 @prefix question: <http://matus.tomlein.org/case/>.
-@prefix http: <http://www.w3.org/2011/http#>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
 
-@forAll :thermostat.
-@forAll :answer.
-@forAll :temperature.
-
-_:question a question:Question;
+local:question a question:Question;
   question:text "What is the target temperature?";
   question:replyType question:temperature.
 
-[
-  a case:Application;
+_:app a case:Application;
   case:name "TempControllerPro";
   case:description "An app for controlling the temperature based on the given setpoint";
+  case:actions (
+    local:set_temperature_action
+  ).
+
+local:set_temperature_action case:description "Set temperature";
   case:requirement (
-    [
-      case:description "Question not answered";
-      case:requires_answering _:question
-    ]
-    [
-      case:description "Thermostat needed";
-      case:condition {
-        :thermostat a case:Device; a case:thermostat.
-      }
-    ]
-  );
-  case:installation (
-    [
-      case:description "Activate the device with the temperature";
-      case:given {
-        :thermostat a case:Device; a case:thermostat.
-        :answer question:answers _:question.
-        :answer case:in_celsius :temperature.
-      };
-      case:execute {
-        [
-          http:methodName "POST";
-          http:body :temperature;
-          http:requestURI <http://140.129.123.12/install>
-        ]
-      }
-    ]
-  )
-]
+    local:thermostat_requirement
+    local:temperature_set_requirement
+  ).
+
+local:thermostat_requirement case:description "Thermostat needed".
+local:temperature_set_requirement case:description "Question not answered";
+  case:requires_answering local:question.
+
+{
+  ?thermostat a case:Device; a dbpedia:Thermostat.
+} => {
+  local:thermostat_requirement case:satisfied true.
+  local:thermostat_requirement case:satisfied_with ?thermostat.
+}.
+
+{
+  ?answer question:answers local:question.
+  ?answer case:in_celsius ?temperature.
+} => {
+  local:temperature_set_requirement case:satisfied true.
+  local:temperature_set_requirement case:satisfied_with ?temperature.
+}.
+
+{
+  local:thermostat_requirement case:satisfied_with ?thermostat.
+  local:temperature_set_requirement case:satisfied_with ?temperature.
+  ?thermostat case:set_temp_url ?url.
+} => {
+  local:set_temperature_action case:requests ( [
+    <http://www.w3.org/2011/http#methodName> "POST";
+    <http://www.w3.org/2011/http#body> ?temperature;
+    <http://www.w3.org/2011/http#requestURI> ?url
+  ] ).
+}.
+
+#  local:set_temperature_action case:promises ( _:state_change).
+#  _:state_change a st:StateChange;
+#    st:removed { ?place ex:hasTemp ?oldTemp. };
+#    st:added { ?place ex:hasTemp ?newTemp. };
+#    st:parent ?state.
+#  ).

@@ -1,6 +1,8 @@
 class Location
   attr_reader :query
 
+  include Answer
+
   def initialize(node, repository)
     @query = NodeQuery.new(node, repository)
   end

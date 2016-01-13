@@ -1,0 +1,64 @@
+# app for controlling the thermostat
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix question: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix st: <http://purl.org/restdesc/states#>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+local:cropType a question:Question;
+  question:text "What is the crop type?";
+  question:options ( "Cereals" "Soya" "Wine" );
+  question:replyType question:select.
+
+local:app a case:Application;
+  case:name "Irrigator";
+  case:description "An app for irrigating fields of various crops".
+
+local:devicesReq a case:Requirement;
+  case:description "Irrigator and sensors needed".
+
+{
+  ?irrigator a case:Irrigator; case:irrigatorType case:centralPivot.
+  ?moistureSensor a case:Sensor; case:sensorType case:moistureSensor.
+  ?phSensor a case:Sensor; case:sensorType case:phSensor.
+} => {
+  local:devicesReq case:satisfied true.
+  local:devicesReq case:uses (
+    ?irrigator ?moistureSensor ?phSensor
+  ).
+}.
+
+{
+  local:devicesReq case:uses ( ?irrigator ?moistureSensor ?phSensor ).
+  ?answer question:answers local:cropType;
+    case:selected ?type.
+  ?state a st:State; log:notIncludes { ?irrigator case:controlledBy ?app }.
+} => {
+  [
+    a case:Action;
+      case:description "Start irrigation";
+      case:executes [ case:command "start";
+        case:argument ( ?irrigator ?moistureSensor ?phSensor ) ];
+      case:effect [ a st:StateChange;
+        st:added { ?irrigator case:controlledBy local:app };
+        st:parent ?state ]
+  ]
+}.
+
+{
+  local:devicesReq case:uses ( ?irrigator ?moistureSensor ?phSensor ).
+  ?state a st:State; log:includes { ?irrigator case:controlledBy local:app }.
+} => {
+  [
+    a case:Action;
+      case:description "Stop irrigation";
+      case:executes [ case:command "stop" ];
+      case:effect [
+        a st:StateChange;
+        st:removed { ?irrigator case:controlledBy local:app };
+        st:parent ?state
+      ]
+  ]
+}.

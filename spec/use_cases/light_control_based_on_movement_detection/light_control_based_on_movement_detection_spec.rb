@@ -15,49 +15,53 @@ describe 'an app that turns on the light when there is movement' do
 
   let(:app) { ontology.applications.first }
 
-  it 'is not compatible yet' do
-    expect(app.compatible?).to eq false
-  end
+  describe 'the install action' do
+    let(:action) { app.action_with_description('Install') }
 
-  describe 'answering the question' do
-    let(:question) { app.questions.first }
-
-    describe 'the question' do
-      subject { question.text }
-      it { is_expected.to eq 'Where do you want to control the lights?' }
+    it 'is not compatible yet' do
+      expect(action.compatible?).to eq false
     end
 
-    it 'is unanswered' do
-      expect(question.has_answer?).to eq false
-    end
+    describe 'answering the question' do
+      let(:question) { action.questions.first }
 
-    describe 'answering the question with location Bathroom' do
-      let(:answer) { question.answer! }
-      before { answer.value.name = 'Bathroom' }
-
-      it 'is not compatible because there are no devices in the bathroom' do
-        expect(app.compatible?).to eq false
-      end
-    end
-
-    describe 'answering the question with location Kitchen' do
-      let(:answer) { question.answer! }
-      before { answer.value.name = 'Kitchen' }
-
-      it 'is compatible now' do
-        expect(app.compatible?).to eq true
+      describe 'the question' do
+        subject { question.text }
+        it { is_expected.to eq 'Where do you want to control the lights?' }
       end
 
-      describe 'installing the app' do
-        let(:subscribe_url) { 'http://140.129.123.12/subscribe' }
-        let(:notify_url) { 'http://140.129.133.21/turn_on' }
+      it 'is unanswered' do
+        expect(question.has_answer?).to eq false
+      end
 
-        before { stub_request(:post, subscribe_url) }
-        before { app.install }
+      describe 'answering the question with location Bathroom' do
+        let(:answer) { question.answer! }
+        before { answer.value.name = 'Bathroom' }
 
-        it 'made a request with the notify callback' do
-          expect(WebMock).to have_requested(:post, subscribe_url).
-            with(body: notify_url)
+        it 'is not compatible because there are no devices in the bathroom' do
+          expect(action.compatible?).to eq false
+        end
+      end
+
+      describe 'answering the question with location Kitchen' do
+        let(:answer) { question.answer! }
+        before { answer.value.name = 'Kitchen' }
+
+        it 'is compatible now' do
+          expect(action.compatible?).to eq true
+        end
+
+        describe 'performing the action' do
+          let(:subscribe_url) { 'http://140.129.123.12/subscribe' }
+          let(:notify_url) { 'http://140.129.133.21/turn_on' }
+
+          before { stub_request(:post, subscribe_url) }
+          before { action.perform }
+
+          it 'made a request with the notify callback' do
+            expect(WebMock).to have_requested(:post, subscribe_url).
+              with(body: notify_url)
+          end
         end
       end
     end

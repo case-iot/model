@@ -6,12 +6,6 @@ class Reasoner
     @repository = repository
   end
 
-  def check_condition(condition)
-    @repository << [ LV.condition, LV.was, LV.true, :helper_graph ]
-    result = imply(condition, :helper_graph)
-    result.query([ LV.condition, LV.was, LV.true ]).size == 1
-  end
-
   # implication doesn't work well when a blank node is used in the
   # condition, e.g.:
   # {?device1 <http://...#type> _:vehicle .} => {...}
@@ -27,6 +21,31 @@ class Reasoner
     parse_eye_output eye_output
   end
 
+  # makes sure that the graph with name condition is valid
+  # to do that, it creates a temporary graph (:helper_graph) and tries to imply
+  # condition => helper_graph
+  # it creates a new temp_reasoner object so as not to modify the current repository
+  # with the helper_graph
+  def check_condition(condition)
+    temp_repository = @repository.clone
+    temp_repository << [ LV.condition, LV.was, LV.true, :helper_graph ]
+
+    temp_reasoner = Reasoner.new temp_repository
+    result = temp_reasoner.imply(condition, :helper_graph)
+
+    result.query([ LV.condition, LV.was, LV.true ]).any?
+  end
+
+  def load_and_process_n3(n3_input)
+    input = [
+      n3_input,
+      EyeSerializer.serialize_graph(facts_only)
+    ].join
+    eye_output = run_eye input
+    parse_eye_output eye_output, @repository
+    @repository
+  end
+
   private
 
   def run_eye(input)
@@ -39,32 +58,28 @@ class Reasoner
     output
   end
 
-  def parse_eye_output(output)
-    repo = RDF::Repository.new
+  def parse_eye_output(output, repo = nil)
+    output = remove_incompatible_prefix_from_eye_output output
+    repo = RDF::Repository.new if repo.nil?
     reader = RDF::Reader.for(:n3).new(output)
-    reader.each_statement do |statement|
-      repo << statement
-    end
+    reader.each_statement { |statement| repo << statement }
     repo
   end
 
-  def graph(name)
-    RDF::Graph.new do |g|
-      @repository.statements.each do |statement|
-        next if statement.graph_name.nil?
-        next unless statement.graph_name.to_s.include?(
-          if name.is_a? Symbol
-            '_:' + name.to_s
-          else
-            name.to_s
-          end
-        )
+  def remove_incompatible_prefix_from_eye_output(output)
+    output.gsub(/PREFIX .+\n/, '')
+  end
 
-        g << [ statement.subject,
-               statement.predicate,
-               statement.object ]
-      end
+  def graph(name)
+    graph_name = if name.is_a? Symbol; "_:#{name.to_s}"; else; name.to_s; end
+    g = RDF::Graph.new
+    @repository.statements.each do |statement|
+      next if statement.graph_name.nil?
+      next unless statement.graph_name.to_s.include? graph_name
+
+      g << [ statement.subject, statement.predicate, statement.object ]
     end
+    g
   end
 
   def facts_only

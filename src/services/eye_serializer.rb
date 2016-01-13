@@ -5,8 +5,6 @@ class EyeSerializer
     "#{facts.dump(:ntriples)}{#{pre}} => {#{post}}."
   end
 
-  private
-
   def self.serialize_graph(graph)
     statements = []
     graph.each_statement do |statement|

@@ -1,8 +1,15 @@
-class Answer
-  attr_reader :query
-
-  def initialize(node, repository)
-    @query = NodeQuery.new(node, repository)
+module Answer
+  def self.create(reply_type, node, repository)
+    case reply_type
+    when :location
+      Location.new(node, repository)
+    when :temperature
+      Temperature.new(node, repository)
+    when :select
+      Selection.new(node, repository)
+    else
+      nil
+    end
   end
 
   def reply_type
@@ -14,16 +21,5 @@ class Answer
     return nil if node.nil?
 
     Question.new(node, query.repository)
-  end
-
-  def value
-    case reply_type
-    when :location
-      Location.new(query.node, query.repository)
-    when :temperature
-      Temperature.new(query.node, query.repository)
-    else
-      nil
-    end
   end
 end

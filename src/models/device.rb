@@ -9,6 +9,10 @@ class Device
     query.value(LV.manufacturer_name)
   end
 
+  def description
+    query.value(LV.description)
+  end
+
   def location
     node = query.value(LV.located_at)
     return nil if node.nil?

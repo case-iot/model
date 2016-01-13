@@ -6,7 +6,7 @@ class Question
   end
 
   def text
-    query.value(QV.text)
+    query.value(QV.text).to_s
   end
 
   def reply_type
@@ -22,7 +22,7 @@ class Question
     node = query.value(QV.has_answer)
     return nil if node.nil?
 
-    Answer.new(node, repository)
+    Answer.create(reply_type, node, query.repository)
   end
 
   # creates a new answer or returns an existing one
