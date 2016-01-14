@@ -9,8 +9,8 @@ describe 'an app for controlling a thermostat' do
 
   let(:app) { ontology.applications.first }
 
-  describe 'there are no actions because we don\'t have the devices' do
-    subject { app.actions.any? }
+  describe 'there are no deployment plans because we don\'t have the devices' do
+    subject { app.deployment_plans.any? }
     it { is_expected.to eq false }
   end
 
@@ -21,8 +21,12 @@ describe 'an app for controlling a thermostat' do
 
     before { ontology.refresh }
 
-    describe 'there are no actions yet' do
-      subject { app.actions.any? }
+    let(:moisture_sensor) { ontology.device_with_description('Moisture Sensor') }
+    let(:ph_sensor) { ontology.device_with_description('Ph Sensor') }
+    let(:irrigator) { ontology.device_with_description('Irrigator') }
+
+    describe 'there are no deployment plans yet' do
+      subject { app.deployment_plans.any? }
       it { is_expected.to eq false }
     end
 
@@ -44,30 +48,43 @@ describe 'an app for controlling a thermostat' do
         before { answer.selected = 'Wine' }
         before { ontology.refresh }
 
-        describe 'there should be a start action now' do
-          let(:start_action) { app.action_with_description('Start irrigation') }
-          let(:execution) { start_action.execution }
+        describe 'there should be a deployment plan now' do
+          let(:deployment_plan) { app.deployment_plan_with_description('Using irrigator, moisture and Ph sensor') }
 
-          subject { start_action }
+          subject { deployment_plan }
           it { is_expected.not_to eq nil }
 
-          describe 'the command' do
-            subject { execution.command }
-            it { is_expected.to eq 'start' }
-          end
-
           describe 'argument descriptions' do
-            subject { execution.arguments.map { |a| a.description } }
-            it { is_expected.to eq [ 'Irrigator', 'Moisture Sensor', 'Ph Sensor' ] }
+            subject { deployment_plan.arguments }
+            it do
+              is_expected.to eq [
+                'Wine', irrigator.node, moisture_sensor.node, ph_sensor.node
+              ]
+            end
           end
 
-          describe 'effect' do
-            let(:state_change) { start_action.effect }
-            let(:changed_ontology) { state_change.apply }
+          describe 'capabilities' do
+            let(:capability) { deployment_plan.capabilities.first }
 
-            it 'the irrigator should be controlled by the app' do
-              r = changed_ontology.query([ nil, LV.controlledBy, app.query.node ])
-              expect(r.size).to eq 1
+            subject { capability }
+            it { is_expected.not_to eq nil }
+
+            describe 'description' do
+              subject { capability.description }
+              it { is_expected.to eq 'Field irrigation' }
+            end
+
+            describe 'actuators' do
+              subject { capability.actuators.map { |a| a.description } }
+              it { is_expected.to eq [ 'Irrigator' ] }
+            end
+
+            describe 'sensors' do
+              subject { capability.sensors.map { |s| s.description } }
+              it { is_expected.to eq [
+                'Moisture Sensor',
+                'Ph Sensor'
+              ] }
             end
           end
         end

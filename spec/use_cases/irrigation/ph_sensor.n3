@@ -2,5 +2,6 @@
 @prefix local: <http://102.12.124.12/>.
 
 local:phSensor a case:Sensor;
+  a case:Device;
   case:description "Ph Sensor";
   case:sensorType case:phSensor.

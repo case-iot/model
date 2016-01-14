@@ -22,15 +22,14 @@ class Application
     questions.select { |q| not q.has_answer? }
   end
 
-  def actions
-    referenced = RDF::List.new(query.value(LV.actions), repo)
-    other = repo.query([nil, RDF.type, LV.Action]).map { |s| s.subject }
-
-    (referenced + other).uniq.map { |node| Action.new(node, repo) }
+  def deployment_plans
+    query.values(LV.hasDeploymentPlan).map do |node|
+      DeploymentPlan.new(node, repo)
+    end
   end
 
-  def action_with_description(description)
-    actions.find { |a| a.description == description }
+  def deployment_plan_with_description(description)
+    deployment_plans.find { |a| a.description == description }
   end
 
   private

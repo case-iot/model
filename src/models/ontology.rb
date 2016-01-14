@@ -34,8 +34,12 @@ class Ontology
     end
   end
 
+  def device_with_description(description)
+    devices.find { |d| d.description == description }
+  end
+
   def refresh
-    Reasoner.new(repository).load_and_process_n3(@n3_input)
+    Reasoner.new(self).load_and_process_n3(@n3_input)
   end
 
   private

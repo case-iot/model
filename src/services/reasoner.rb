@@ -2,6 +2,8 @@ require 'rdf/n3'
 require 'tempfile'
 
 class Reasoner
+  attr_reader :repository
+
   def initialize(repository)
     @repository = repository
   end
@@ -12,9 +14,9 @@ class Reasoner
   # will always result in the postcondition, because of _:vehicle
   def imply(precondition, postcondition)
     eye_input = EyeSerializer.serialize_implication(
-      facts_only,
-      graph(precondition),
-      graph(postcondition)
+      repository.facts_only,
+      repository.graph(precondition),
+      repository.graph(postcondition)
     )
 
     eye_output = run_eye eye_input
@@ -39,7 +41,7 @@ class Reasoner
   def load_and_process_n3(n3_input)
     input = [
       n3_input,
-      EyeSerializer.serialize_graph(facts_only)
+      EyeSerializer.serialize_graph(repository.facts_only)
     ].join
     eye_output = run_eye input
     parse_eye_output eye_output, @repository
@@ -67,26 +69,8 @@ class Reasoner
   end
 
   def remove_incompatible_prefix_from_eye_output(output)
-    output.gsub(/PREFIX .+\n/, '')
-  end
-
-  def graph(name)
-    graph_name = if name.is_a? Symbol; "_:#{name.to_s}"; else; name.to_s; end
-    g = RDF::Graph.new
-    @repository.statements.each do |statement|
-      next if statement.graph_name.nil?
-      next unless statement.graph_name.to_s.include? graph_name
-
-      g << [ statement.subject, statement.predicate, statement.object ]
-    end
-    g
-  end
-
-  def facts_only
-    RDF::Graph.new do |g|
-      @repository.statements.each do |statement|
-        g << statement if statement.graph_name.nil?
-      end
+    output.gsub(/PREFIX .+\n/) do |match|
+      match.sub('PREFIX ', '@prefix ') + '.'
     end
   end
 end

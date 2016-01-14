@@ -1,16 +1,15 @@
 # app for controlling the thermostat
 
 @prefix case: <http://matus.tomlein.org/case/>.
-@prefix question: <http://matus.tomlein.org/case/>.
 @prefix local: <http://102.12.124.12/>.
 @prefix dbpedia: <http://dbpedia.org/resource/>.
 @prefix st: <http://purl.org/restdesc/states#>.
 @prefix log: <http://www.w3.org/2000/10/swap/log#>.
 
-local:cropType a question:Question;
-  question:text "What is the crop type?";
-  question:options ( "Cereals" "Soya" "Wine" );
-  question:replyType question:select.
+local:cropType a case:Question;
+  case:text "What is the crop type?";
+  case:options ( "Cereals" "Soya" "Wine" );
+  case:replyType case:select.
 
 local:app a case:Application;
   case:name "Irrigator";
@@ -25,40 +24,38 @@ local:devicesReq a case:Requirement;
   ?phSensor a case:Sensor; case:sensorType case:phSensor.
 } => {
   local:devicesReq case:satisfied true.
-  local:devicesReq case:uses (
-    ?irrigator ?moistureSensor ?phSensor
-  ).
+
+  [ case:storedMatchedDevices
+    ( ?irrigator ?moistureSensor ?phSensor) ].
 }.
 
 {
-  local:devicesReq case:uses ( ?irrigator ?moistureSensor ?phSensor ).
-  ?answer question:answers local:cropType;
-    case:selected ?type.
-  ?state a st:State; log:notIncludes { ?irrigator case:controlledBy ?app }.
-} => {
-  [
-    a case:Action;
-      case:description "Start irrigation";
-      case:executes [ case:command "start";
-        case:argument ( ?irrigator ?moistureSensor ?phSensor ) ];
-      case:effect [ a st:StateChange;
-        st:added { ?irrigator case:controlledBy local:app };
-        st:parent ?state ]
-  ]
-}.
+  local:devicesReq case:satisfied true.
+  [ case:storedMatchedDevices
+    ( ?irrigator ?moistureSensor ?phSensor) ].
 
-{
-  local:devicesReq case:uses ( ?irrigator ?moistureSensor ?phSensor ).
-  ?state a st:State; log:includes { ?irrigator case:controlledBy local:app }.
+  [ case:answers local:cropType; case:selected ?cropType ].
+  ?state a st:State.
 } => {
-  [
-    a case:Action;
-      case:description "Stop irrigation";
-      case:executes [ case:command "stop" ];
-      case:effect [
-        a st:StateChange;
-        st:removed { ?irrigator case:controlledBy local:app };
-        st:parent ?state
-      ]
-  ]
+  local:app case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+      case:description "Using irrigator, moisture and Ph sensor";
+      case:arguments (
+        ?cropType ?irrigator
+        ?moistureSensor ?phSensor
+      );
+      case:capabilities (
+        [ a case:Irrigation;
+            case:description "Field irrigation";
+            case:cropType ?cropType;
+            case:actuator ?irrigator;
+            case:sensor ?moistureSensor;
+            case:sensor ?phSensor ]
+      );
+      case:requires (
+        [ a case:ControlPermission; case:for ?irrigator ]
+        [ a case:ReadPermission; case:for ?moistureSensor ]
+        [ a case:ReadPermission; case:for ?phSensor ]
+      )
+  ].
 }.

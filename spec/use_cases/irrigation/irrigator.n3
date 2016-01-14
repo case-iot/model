@@ -2,5 +2,6 @@
 @prefix local: <http://102.12.124.12/>.
 
 local:irrigator a case:Irrigator;
+  a case:Device;
   case:description "Irrigator";
   case:irrigatorType case:centralPivot.

@@ -19,4 +19,8 @@ class Device
 
     Location.new(node, query.repository)
   end
+
+  def node
+    query.node
+  end
 end

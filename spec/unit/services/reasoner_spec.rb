@@ -2,7 +2,7 @@ require_relative '../spec_helper'
 
 describe Reasoner do
   let(:repo) { RDF::Repository.new }
-  let(:reasoner) { Reasoner.new(repo) }
+  let(:reasoner) { Reasoner.new(Ontology.new(repo)) }
   let(:person1) { RDF::Query::Variable.new(:p1) }
   let(:person2) { RDF::Query::Variable.new(:p2) }
 

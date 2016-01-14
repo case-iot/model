@@ -1,6 +1,7 @@
 @prefix case: <http://matus.tomlein.org/case/>.
 @prefix local: <http://102.12.124.12/>.
 
-local:moistureSensor a case:Sensor;
+local:moistureSensor a case:Device;
+  a case:Sensor;
   case:description "Moisture Sensor";
   case:sensorType case:moistureSensor.
