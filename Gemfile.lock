@@ -22,6 +22,9 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
+    rspec-core (3.4.1)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
     safe_yaml (1.0.4)
     unf (0.1.4)
       unf_ext
@@ -38,4 +41,5 @@ DEPENDENCIES
   rdf-n3 (= 1.99.0)
   rdf-vocab (= 0.8.7.1)
   rest-client (= 1.8.0)
+  rspec-core (= 3.4.1)
   webmock (= 1.22.3)
