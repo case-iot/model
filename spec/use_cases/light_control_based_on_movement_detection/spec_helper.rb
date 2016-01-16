@@ -9,5 +9,6 @@ def load_kitchen_light(repo)
 end
 
 def load_light_control_app(repo)
-  read_def(repo, File.dirname(__FILE__) + '/light_control_app.n3')
+  n3 = File.read(File.dirname(__FILE__) + '/light_control_app.n3')
+  ontology.load_and_process_n3 n3
 end

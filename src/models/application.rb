@@ -22,6 +22,15 @@ class Application
     questions.select { |q| not q.has_answer? }
   end
 
+  def requirements
+    list = repo.query([nil, RDF.type, QV.Requirement]).map { |s| s.subject }
+    list.map { |node| Requirement.new(node, repo) }
+  end
+
+  def requirement_with_description(description)
+    requirements.find { |r| r.description == description }
+  end
+
   def deployment_plans
     query.values(LV.hasDeploymentPlan).map do |node|
       DeploymentPlan.new(node, repo)

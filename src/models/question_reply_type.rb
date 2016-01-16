@@ -1,11 +1,11 @@
 class QuestionReplyType
   def self.to_sym(query)
     case query.value(QV.reply_type)
-    when QV.location
+    when QV.Location
       :location
-    when QV.temperature
+    when QV.Temperature
       :temperature
-    when QV.select
+    when QV.Select
       :select
     else
       nil

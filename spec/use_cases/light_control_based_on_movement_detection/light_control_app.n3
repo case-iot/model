@@ -1,84 +1,76 @@
 # app for controlling the thermostat
 
 @prefix case: <http://matus.tomlein.org/case/>.
-@prefix question: <http://matus.tomlein.org/case/>.
-@prefix http: <http://www.w3.org/2011/http#>.
 @prefix local: <http://102.12.124.12/>.
 
-@forAll :sensor.
-@forAll :light.
-@forAll :answer.
-@forAll :place.
-@forAll :subscribe_url.
-@forAll :notify_url.
-
-local:question a question:Question;
-  question:text "Where do you want to control the lights?";
-  question:replyType question:location.
-
-[
+local:app
   a case:Application;
   case:name "LightMovement";
-  case:description "An app that turns the light on when there is a movement";
+  case:description "An app that turns the light on when there is a movement".
 
-  case:actions (
-    [
-      case:description "Install";
-      case:requirement (
-        [
-          case:description "Movement sensor needed";
-          case:requires_answering local:question;
-          case:condition {
-            :sensor a case:Device;
-              a case:sensor;
-              case:senses case:movement;
-              case:located_at [ case:location_name :place ].
+local:question a case:Question;
+  case:text "Where do you want to control the lights?";
+  case:replyType case:Location.
 
-            :answer question:answers local:question;
-              case:location_name :place.
-          }
-        ]
+local:movementSensorRequirement a case:Requirement;
+  case:description "Movement sensor needed".
 
-        [
-          case:description "Light needed";
-          case:requires_answering local:question;
-          case:condition {
-            :light a case:Device;
-              a case:light;
-              case:located_at [ case:location_name :place ].
+{
+  ?sensor a case:Device;
+    a case:Sensor;
+    case:senses case:movement;
+    case:located_at [ case:location_name ?place ].
 
-            :answer question:answers local:question;
-              case:location_name :place.
-          }
-        ]
+  ?answer case:answers local:question;
+    case:location_name ?place.
+} => {
+  local:movementSensorRequirement case:satisfied true.
+
+  [ case:storedMatchedSensor ?sensor ].
+}.
+
+local:lightRequirement a case:Requirement;
+  case:description "Light needed".
+
+{
+  ?light a case:Device;
+    a case:Light;
+    case:located_at [ case:location_name ?place ].
+
+  ?answer case:answers local:question;
+    case:location_name ?place.
+} => {
+  local:lightRequirement case:satisfied true.
+
+  [ case:storedMatchedLight ?light ].
+}.
+
+{
+  local:lightRequirement case:satisfied true.
+  local:movementSensorRequirement case:satisfied true.
+
+  [ case:storedMatchedLight ?light ].
+  ?light case:turn_on_url ?notify_url.
+
+  [ case:storedMatchedSensor ?sensor ].
+  ?sensor case:subscribe_url ?subscribe_url.
+
+  ?answer case:answers local:question;
+    case:location_name ?place.
+} => {
+  local:app case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+      case:description "Start monitoring the sensor";
+      case:arguments (
+        ?subscribe_url
+        ?notify_url
       );
-
-      case:steps (
-        [
-          case:description "Subscribe the light to the sensor";
-          case:given {
-            :answer question:answers local:question;
-              case:location_name :place.
-
-            :light a case:Device;
-              a case:light;
-              case:located_at [ case:location_name :place ];
-              case:turn_on_url :notify_url.
-
-            :sensor a case:sensor;
-              case:senses case:movement;
-              case:located_at [ case:location_name :place ];
-              case:subscribe_url :subscribe_url.
-          };
-          case:execute {
-            [
-              http:methodName "POST";
-              http:body :notify_url;
-              http:requestURI :subscribe_url
-            ]
-          }
-        ]
+      case:capabilities (
+        [ a case:Alarm;
+            case:description "Blinks the lights when there is movement";
+            case:Location ?place;
+            case:actuator ?light;
+            case:sensor ?sensor ]
       )
-    ]
-  );
-]
+  ].
+}.

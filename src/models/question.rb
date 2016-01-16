@@ -41,25 +41,11 @@ class Question
     answer_query.set_value(QV.answers, query.node)
     query.set_value(QV.has_answer, node)
 
-    create_location_device_link if reply_type == :location
-
     answer
   end
 
   def generate_answer_node
     question_uri_hash = query.node.to_s.hash.to_s
     ('answer' + question_uri_hash).to_sym
-  end
-
-  def create_location_device_link
-    return unless query.value_exists?(QV.location_of)
-
-    location_of.query.set_value(LV.located_at, answer.query.node)
-  end
-
-  def location_of
-    device_node = query.value(QV.location_of)
-    return nil if device_node.nil?
-    Device.new(device_node, repository)
   end
 end
