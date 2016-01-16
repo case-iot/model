@@ -12,6 +12,7 @@ GEM
     link_header (0.0.8)
     mime-types (2.99)
     netrc (0.11.0)
+    rake (10.5.0)
     rdf (1.99.0)
       link_header (~> 0.0, >= 0.0.8)
     rdf-n3 (1.99.0)
@@ -38,6 +39,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  rake (= 10.5.0)
   rdf-n3 (= 1.99.0)
   rdf-vocab (= 0.8.7.1)
   rest-client (= 1.8.0)
