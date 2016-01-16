@@ -5,7 +5,7 @@ describe 'an action for configuring a thermostat' do
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
 
-  before { load_app_definition(ontology) }
+  before { load_thermostat_app_definition(ontology) }
   let(:app) { ontology.applications.first }
 
   describe 'the question to set the temperature' do

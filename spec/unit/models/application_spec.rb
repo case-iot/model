@@ -6,11 +6,10 @@ def create_repo
     r << [:a, RDF::Vocab::FOAF.name, 'Some App']
     r << [:a, LV.description, 'Description of the app.']
 
-    list = RDF::List[:action1, :action2]
-    r << list
-    r << [:a, LV.actions, list.subject]
-    r << [:action1, LV.description, 'This needs to be so and so.']
-    r << [:action2, LV.description, 'This needs to be so and so.']
+    r << [:a, LV.hasDeploymentPlan, :deployment_plan1]
+    r << [:a, LV.hasDeploymentPlan, :deployment_plan2]
+    r << [:deployment_plan1, LV.description, 'This needs to be so and so.']
+    r << [:deployment_plan2, LV.description, 'This needs to be so and so.']
   end
 end
 
@@ -29,18 +28,14 @@ describe Application do
     it { is_expected.to eq('Description of the app.') }
   end
 
-  context '#actions' do
-    subject { app.actions.size }
+  context '#deployment_plans' do
+    subject { app.deployment_plans.size }
     it { is_expected.to eq 2 }
 
-    describe 'non-referenced actions' do
-      before { repo << [ :action3, RDF.type, LV.Action ] }
-
-      it { is_expected.to eq 3 }
-    end
-
     describe 'should not have doubles' do
-      before { repo << [ :action2, RDF.type, LV.Action ] }
+      before do
+        repo << [ :a, LV.hasDeploymentPlan, :deployment_plan2 ]
+      end
 
       it { is_expected.to eq 2 }
     end

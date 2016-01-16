@@ -6,7 +6,7 @@ describe Question do
       r << [:a, RDF.type, LV.Application]
       r << [:device_location, RDF.type, QV.question_type]
       r << [:device_location, QV.text, 'Where is the thing?']
-      r << [:device_location, QV.reply_type, QV.location]
+      r << [:device_location, QV.reply_type, QV.Location]
       r << [:device_location, QV.location_of, :device]
       r << [:dev, RDF.type, LV.Device]
       r << [:dev, LV.manufacturer_name, 'Apple']
@@ -45,17 +45,11 @@ describe Question do
 
       describe 'location answer properties' do
         before :each do
-          answer.value.name = 'Balcony'
+          answer.name = 'Balcony'
         end
 
-        subject { answer.value.name }
+        subject { answer.name }
         it { is_expected.to eq('Balcony') }
-
-        describe 'creates a link to the location from device' do
-          let(:device) { Device.new(:dev, repo) }
-          subject { device.location.name }
-          it { is_expected.to eq('Balcony') }
-        end
       end
     end
   end
@@ -86,8 +80,8 @@ describe Question do
 
     context '#answer!' do
       it 'should have the same value as calling answer' do
-        with_bang = question.answer!.value.name
-        without_bang = question.answer.value.name
+        with_bang = question.answer!.name
+        without_bang = question.answer.name
         expect(with_bang).to eq(without_bang)
       end
     end

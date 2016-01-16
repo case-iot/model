@@ -25,7 +25,10 @@ describe EyeSerializer do
 
     it do
       is_expected.to eq('<http://matus.tomlein.org/case/john> <http://matus.tomlein.org/case/knows> <http://matus.tomlein.org/case/jane> .
-{?p1 <http://matus.tomlein.org/case/knows> ?p2 .} => {?p2 <http://matus.tomlein.org/case/knows> ?p1 .}.')
+{?p1 <http://matus.tomlein.org/case/knows> ?p2 .
+} => {?p2 <http://matus.tomlein.org/case/knows> ?p1 .
+}.
+')
     end
   end
 end

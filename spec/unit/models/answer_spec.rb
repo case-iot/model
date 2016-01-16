@@ -9,20 +9,21 @@ describe Answer do
       r << [:dev, LV.located_at, :device_location]
       # QUESTION
       r << [:device_location, RDF.type, QV.question_type]
-      r << [:device_location, QV.reply_type, QV.location]
+      r << [:device_location, QV.reply_type, QV.Location]
       r << [:device_location, QV.location_of, :dev]
       r << [:device_location, QV.text, 'Where is the thing?']
       # ANSWER
       r << [:device_location, QV.has_answer, :answer]
       r << [:answer, RDF.type, QV.answer_type]
       r << [:answer, QV.answers, :device_location]
-      r << [:answer, RDF.type, QV.location]
+      r << [:answer, RDF.type, QV.Location]
       r << [:answer, LV.location_name, 'Living Room']
     end
   end
 
   let(:ontology) { Ontology.new(repo) }
-  let(:answer) { Answer.new(:device_location, repo) }
+  let(:question) { Question.new(:device_location, ontology) }
+  let(:answer) { question.answer }
 
   context '#question.text' do
     subject { answer.question.text }
@@ -35,35 +36,8 @@ describe Answer do
     it { is_expected.to eq(:location) }
   end
 
-  context '#value' do
-    let(:value) { answer.value }
-
-    context '#name' do
-      subject { value.name }
-      it { is_expected.to eq('Living Room') }
-    end
-
-    context '#name=' do
-      before :each do
-        value.name = 'Kitchen'
-      end
-
-      subject { value.name }
-      it { is_expected.to eq('Kitchen') }
-
-      describe 'new instances should have the changed value' do
-        let(:new_answer) { Answer.new(:device_location, repo) }
-
-        subject { new_answer.value.name }
-        it { is_expected.to eq('Kitchen') }
-      end
-
-      describe 'location of the device changes as well' do
-        let(:device) { Device.new(:dev, repo) }
-
-        subject { device.location.name }
-        it { is_expected.to eq('Kitchen') }
-      end
-    end
+  describe 'should have type Location' do
+    subject { answer }
+    it { is_expected.to be_kind_of Location }
   end
 end

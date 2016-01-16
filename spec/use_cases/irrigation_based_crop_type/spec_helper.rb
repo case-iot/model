@@ -12,7 +12,7 @@ def load_moisture_sensor_definition(ontology)
   read_def(repo, File.dirname(__FILE__) + '/moisture_sensor.n3')
 end
 
-def load_app_definition(ontology)
+def load_irrigator_app_definition(ontology)
   n3 = File.read(File.dirname(__FILE__) + '/irrigation_app.n3')
   ontology.load_and_process_n3 n3
 end

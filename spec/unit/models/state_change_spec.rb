@@ -3,7 +3,7 @@ require_relative '../spec_helper'
 describe StateChange do
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
-  let(:state_change) { StateChange.new(:state_change, repo) }
+  let(:state_change) { StateChange.new(:state_change, ontology) }
 
   before do
     repo << [ :state, RDF.type, StateVocabulary.State ]
@@ -12,26 +12,22 @@ describe StateChange do
     repo << [ :state_change, StateVocabulary.removed, :removed ]
     repo << [ :state_change, StateVocabulary.parent, :state ]
 
-    repo << [ :thermostat, :state, :active, :added ]
+    repo << [ :app, RDF.type, LV.Application, :added ]
+    repo << [ :app, LV.description, 'A new app', :added ]
   end
 
-  context '#achieves_goal' do
-    describe 'successful goal' do
-      let(:goal) do
-        RDF::Graph.new { |r| r << [ :thermostat, :state, :active ] }
-      end
+  describe 'before applying the state change' do
+    let(:app) { ontology.applications.first }
 
-      subject { state_change.achieves_goal? goal }
-      it { is_expected.to eq true }
-    end
+    subject { app.nil? }
+    pending { is_expected.to eq true }
+  end
 
-    describe 'unsuccesful goal' do
-      let(:goal) do
-        RDF::Graph.new { |r| r << [ :thermostat, :state, :inactive ] }
-      end
+  context '#apply' do
+    let(:new_ontology) { state_change.apply }
+    let(:app) { new_ontology.applications.first }
 
-      subject { state_change.achieves_goal? goal }
-      it { is_expected.to eq false }
-    end
+    subject { app.description }
+    it { is_expected.to eq 'A new app' }
   end
 end

@@ -1,22 +1,22 @@
 require_relative '../spec_helper'
 
 describe Ontology do
-  let(:repo) do
-    RDF::Repository.new do |r|
-      # APPS
-      r << [:app1, RDF.type, LV.Application]
-      r << [:app1, RDF::Vocab::FOAF.name, 'App 1']
-      r << [:app2, RDF.type, LV.Application]
-      r << [:app2, RDF::Vocab::FOAF.name, 'App 2']
-
-      # DEVICES
-      r << [:dev1, RDF.type, LV.Device]
-      r << [:dev1, LV.manufacturer_name, 'Grundfos']
-      r << [:dev2, RDF.type, LV.Device]
-      r << [:dev2, LV.manufacturer_name, 'Danfoss']
-    end
-  end
+  let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
+
+  before do
+    # APPS
+    repo << [:app1, RDF.type, LV.Application]
+    repo << [:app1, RDF::Vocab::FOAF.name, 'App 1']
+    repo << [:app2, RDF.type, LV.Application]
+    repo << [:app2, RDF::Vocab::FOAF.name, 'App 2']
+
+    # DEVICES
+    repo << [:dev1, RDF.type, LV.Device]
+    repo << [:dev1, LV.manufacturer_name, 'Grundfos']
+    repo << [:dev2, RDF.type, LV.Device]
+    repo << [:dev2, LV.manufacturer_name, 'Danfoss']
+  end
 
   context '#applications' do
     let(:apps) { ontology.applications }

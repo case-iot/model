@@ -3,13 +3,12 @@
 @prefix case: <http://matus.tomlein.org/case/>.
 @prefix local: <http://102.12.124.12/>.
 @prefix dbpedia: <http://dbpedia.org/resource/>.
-@prefix st: <http://purl.org/restdesc/states#>.
 @prefix log: <http://www.w3.org/2000/10/swap/log#>.
 
 local:cropType a case:Question;
   case:text "What is the crop type?";
   case:options ( "Cereals" "Soya" "Wine" );
-  case:replyType case:select.
+  case:replyType case:Select.
 
 local:app a case:Application;
   case:name "Irrigator";
@@ -35,7 +34,6 @@ local:devicesReq a case:Requirement;
     ( ?irrigator ?moistureSensor ?phSensor) ].
 
   [ case:answers local:cropType; case:selected ?cropType ].
-  ?state a st:State.
 } => {
   local:app case:hasDeploymentPlan [
     a case:DeploymentPlan;

@@ -14,7 +14,7 @@ class Ontology
   def initialize(repository, n3_input = nil)
     @repository = repository
     load_and_process_n3 n3_input if n3_input
-    initialize_state
+    # initialize_state
   end
 
   def load_and_process_n3(n3_input)
@@ -44,7 +44,8 @@ class Ontology
 
   private
 
+  ## load an empty State formula in case there are some StateChange statements
   def initialize_state
-    load_and_process_n3 '{} a <http://purl.org/restdesc/states#State>.'
+    load_and_process_n3 '{ <http://example.com/x> <http://example.com/y> <http://example.com/z>.} a <http://purl.org/restdesc/states#State>.'
   end
 end

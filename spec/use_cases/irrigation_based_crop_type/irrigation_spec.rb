@@ -1,11 +1,11 @@
 require_relative 'spec_helper'
 
-describe 'an app for controlling a thermostat' do
+describe 'an app for irrigating fields based on the crops' do
 
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
 
-  before { load_app_definition(ontology) }
+  before { load_irrigator_app_definition(ontology) }
 
   let(:app) { ontology.applications.first }
 
