@@ -1,0 +1,24 @@
+# app for controlling the thermostat
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+
+local:question a case:Question;
+  case:text "What is the target temperature?";
+  case:replyType case:Temperature.
+
+local:app a case:Application;
+  case:name "TempControllerPro";
+  case:description "An action for configuring the temperature based on the given setpoint".
+
+{
+  [ case:answers local:question;
+      case:in_celsius ?temperature ].
+} => {
+  local:app case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+    case:description "Update temperature";
+    case:arguments ( ?temperature )
+  ].
+}.

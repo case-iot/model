@@ -6,5 +6,4 @@
 
 case:nest10000 a case:Device;
   a dbpedia:Thermostat;
-  case:set_temp_url local:set_temp;
   case:manufacturer_name "Grundfos".
