@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.8)
+    addressable (2.4.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     domain_name (0.5.25)
@@ -13,7 +13,7 @@ GEM
     mime-types (2.99)
     netrc (0.11.0)
     rake (10.5.0)
-    rdf (1.99.0)
+    rdf (1.99.1)
       link_header (~> 0.0, >= 0.0.8)
     rdf-n3 (1.99.0)
       rdf (~> 1.99)
