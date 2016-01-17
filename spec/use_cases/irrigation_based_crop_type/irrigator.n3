@@ -3,5 +3,6 @@
 
 local:irrigator a case:Irrigator;
   a case:Device;
+  a case:EcosystemHost;
   case:description "Irrigator";
   case:irrigatorType case:centralPivot.

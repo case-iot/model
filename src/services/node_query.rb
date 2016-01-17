@@ -19,9 +19,27 @@ class NodeQuery
     values(predicate).any?
   end
 
-  def set_value(predicate, object)
-    delete_value(predicate)
+  def set_value(predicate, object, replace = true)
+    delete_value(predicate) if replace
     @repository << [ node, predicate, object ]
+  end
+
+  def predicates_and_objects
+    values = {}
+    repository.query([ node, nil, nil ]).each do |s|
+      if values.has_key? s.predicate
+        if values[s.predicate].is_a? Array
+          values[s.predicate] << s.object
+        else
+          values[s.predicate] = [
+            values[s.predicate], s.object
+          ]
+        end
+      else
+        values[s.predicate] = s.object
+      end
+    end
+    values
   end
 
   private

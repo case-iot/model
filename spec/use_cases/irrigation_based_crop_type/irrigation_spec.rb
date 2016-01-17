@@ -58,7 +58,10 @@ describe 'an app for irrigating fields based on the crops' do
             subject { deployment_plan.arguments }
             it do
               is_expected.to eq [
-                'Wine', irrigator.node, moisture_sensor.node, ph_sensor.node
+                'Wine',
+                irrigator.node,
+                moisture_sensor.node,
+                ph_sensor.node
               ]
             end
           end
