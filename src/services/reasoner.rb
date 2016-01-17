@@ -43,6 +43,7 @@ class Reasoner
       n3_input,
       EyeSerializer.serialize_graph(repository.facts_only)
     ].join
+
     eye_output = run_eye input
     parse_eye_output eye_output, @repository
     @repository

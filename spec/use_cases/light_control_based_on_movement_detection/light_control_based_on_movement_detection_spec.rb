@@ -3,9 +3,10 @@ require_relative 'spec_helper'
 describe 'an app that turns on the light when there is movement' do
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
+  let(:loader) { LightControlBasedOnMovementDetectionLoader.new ontology }
 
   before do # load the app
-    load_light_control_app(repo)
+    loader.app
   end
 
   let(:app) { ontology.applications.first }
@@ -55,14 +56,14 @@ describe 'an app that turns on the light when there is movement' do
       end
 
       describe 'light requirement satisfied' do
-        before { load_kitchen_light(repo) }
+        before { loader.kitchen_light }
         before { ontology.refresh }
         subject { light_requirement.satisfied? }
         it { is_expected.to eq true }
       end
 
       describe 'sensor requirement satisfied' do
-        before { load_kitchen_movement_sensor(repo) }
+        before { loader.kitchen_movement_sensor }
         before { ontology.refresh }
         subject { sensor_requirement.satisfied? }
         it { is_expected.to eq true }
@@ -70,8 +71,8 @@ describe 'an app that turns on the light when there is movement' do
 
       describe 'both devices loaded' do
         before do # start the devices
-          load_kitchen_light(repo)
-          load_kitchen_movement_sensor(repo)
+          loader.kitchen_light
+          loader.kitchen_movement_sensor
         end
         before { ontology.refresh }
 

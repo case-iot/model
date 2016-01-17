@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-class IrrigationBasedOnCropTypeLoader
+class IrrigationBasedOnCropTypeLoader < UseCaseLoader
   def initialize(ontology)
     @ontology = ontology
   end

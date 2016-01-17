@@ -1,9 +1,0 @@
-# THERMOSTAT DESCRIPTION
-
-@prefix local: <http://102.12.124.19/>.
-@prefix case: <http://matus.tomlein.org/case/>.
-@prefix dbpedia: <http://dbpedia.org/resource/>.
-
-case:nest10000 a case:Device;
-  a dbpedia:Thermostat;
-  case:manufacturer_name "Grundfos".
