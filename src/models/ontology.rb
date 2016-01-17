@@ -18,7 +18,7 @@ class Ontology
   end
 
   def load_and_process_n3(n3_input)
-    @n3_input = n3_input
+    (@n3_inputs ||= []) << n3_input
     refresh
   end
 
@@ -39,7 +39,7 @@ class Ontology
   end
 
   def refresh
-    Reasoner.new(self).load_and_process_n3(@n3_input)
+    @n3_inputs.each { |input| Reasoner.new(self).load_and_process_n3(input) }
   end
 
   private
