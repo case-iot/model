@@ -8,7 +8,13 @@ class Selection
   end
 
   def options
-    RDF::List.new(question.query.value(QV.options), query.repository)
+    if question.query.value_exists?(QV.options)
+      RDF::List.new(question.query.value(QV.options), query.repository)
+    elsif question.query.value_exists?(QV.option)
+      question.query.values(QV.option)
+    else
+      nil
+    end
   end
 
   def selected

@@ -4,8 +4,9 @@ describe 'an app for irrigating fields based on the crops' do
 
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
+  let(:loader) { IrrigationBasedOnCropTypeLoader.new(ontology) }
 
-  before { load_irrigator_app_definition(ontology) }
+  before { loader.app }
 
   let(:app) { ontology.applications.first }
 
@@ -15,9 +16,9 @@ describe 'an app for irrigating fields based on the crops' do
   end
 
   describe 'starting the devices' do
-    before { load_irrigator_definition(ontology) }
-    before { load_ph_sensor_definition(ontology) }
-    before { load_moisture_sensor_definition(ontology) }
+    before { loader.irrigator }
+    before { loader.ph_sensor }
+    before { loader.moisture_sensor }
 
     before { ontology.refresh }
 

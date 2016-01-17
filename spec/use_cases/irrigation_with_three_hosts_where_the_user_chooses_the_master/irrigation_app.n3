@@ -1,0 +1,112 @@
+# this is a model for an app that deploys three packages
+# to three different irrigators that are ecosystem hosts.
+# one of the irrigators is the master, the other two are
+# slaves.
+#
+# the user is asked which one is the master through an open
+# question.
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+local:app a case:Application;
+  case:name "Irrigator3";
+  case:description "An app that requires 3 hosts that are irrigators - one master and two slaves".
+
+local:host1Required a case:Requirement;
+  case:description "Host 1 required".
+local:host2Required a case:Requirement;
+  case:description "Host 2 required".
+local:host3Required a case:Requirement;
+  case:description "Host 3 required".
+
+{
+  ?irrigator a case:Irrigator; a case:EcosystemHost.
+} => {
+  local:host1Required case:satisfied true.
+}.
+
+{
+  ?irrigator1 a case:Irrigator; a case:EcosystemHost.
+  ?irrigator2 a case:Irrigator; a case:EcosystemHost.
+
+  # otherwise it would match the same one for both
+  ?irrigator1 log:notEqualTo ?irrigator2.
+} => {
+  local:host2Required case:satisfied true.
+}.
+
+{
+  ?master a case:Irrigator; a case:EcosystemHost.
+  ?slave1 a case:Irrigator; a case:EcosystemHost.
+  ?slave2 a case:Irrigator; a case:EcosystemHost.
+
+  ?master log:notEqualTo ?slave1; log:notEqualTo ?slave2.
+  ?slave1 log:notEqualTo ?slave2.
+} => {
+  local:host3Required case:satisfied true.
+}.
+
+{
+  local:host3Required case:satisfied true.
+  ?irrigator a case:Irrigator; a case:EcosystemHost.
+} => {
+  # the question is only defined if there are at least 3 hosts
+  local:chooseMaster a case:Question;
+    case:text "Which device do you want to use as master?";
+    case:option ?irrigator;
+    case:replyType case:Select.
+}.
+
+{
+  # the answer to the question which irrigator is the master
+  [ case:answers local:chooseMaster; case:selected ?master ].
+
+  ?slave1 a case:Irrigator; a case:EcosystemHost.
+  ?slave2 a case:Irrigator; a case:EcosystemHost.
+
+  ?master log:notEqualTo ?slave1; log:notEqualTo ?slave2.
+  ?slave1 log:notEqualTo ?slave2.
+} => {
+  local:app case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+      case:description "Deploy using 3 hosts";
+
+      case:hasDeploymentPlan [
+        a case:DeploymentPlan;
+        case:description "Deploy to the master";
+        case:host ?master;
+        case:arguments [
+          case:slave ?slave1;
+          case:slave ?slave2
+        ]
+      ];
+
+      case:hasDeploymentPlan [
+        a case:DeploymentPlan;
+        case:description "Deploy to the slave";
+        case:host ?slave1;
+        case:arguments [
+          case:master ?master;
+        ]
+      ];
+
+      case:hasDeploymentPlan [
+        a case:DeploymentPlan;
+        case:description "Deploy to the slave";
+        case:host ?slave2;
+        case:arguments [
+          case:master ?master;
+        ]
+      ];
+
+      case:capability [ a case:Irrigation;
+        case:description "Field irrigation";
+        case:actuator ?master;
+        case:actuator ?slave1;
+        case:actuator ?slave2 ]
+  ].
+}.

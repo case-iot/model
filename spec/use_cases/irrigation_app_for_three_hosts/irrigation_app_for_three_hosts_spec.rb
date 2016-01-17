@@ -4,8 +4,9 @@ describe 'an app for irrigating fields using 3 actuators' do
 
   let(:repo) { RDF::Repository.new }
   let(:ontology) { Ontology.new(repo) }
+  let(:loader) { IrrigationFor3HostsLoader.new(ontology) }
 
-  before { load_3_host_irrigator_app_definition(ontology) }
+  before { loader.app }
 
   let(:app) { ontology.applications.first }
   let(:deployment_plans) { app.deployment_plans }
@@ -30,7 +31,7 @@ describe 'an app for irrigating fields using 3 actuators' do
   end
 
   describe 'adding one host' do
-    let!(:host1) { create_irrigator_that_is_a_ecosystem_host(ontology, 1) }
+    let!(:host1) { loader.create_ecosystem_host(1) }
     before { ontology.refresh }
 
     describe 'one out of three requirements is satisfied' do
@@ -39,7 +40,7 @@ describe 'an app for irrigating fields using 3 actuators' do
     end
 
     describe 'adding the second host' do
-      let!(:host2) { create_irrigator_that_is_a_ecosystem_host(ontology, 2) }
+      let!(:host2) { loader.create_ecosystem_host(2) }
     before { ontology.refresh }
 
       describe 'two out of three requirements is satisfied' do
@@ -48,10 +49,10 @@ describe 'an app for irrigating fields using 3 actuators' do
       end
 
       describe 'adding the third host' do
-        let!(:host3) { create_irrigator_that_is_a_ecosystem_host(ontology, 3) }
+        let!(:host3) { loader.create_ecosystem_host(3) }
     before { ontology.refresh }
 
-        describe 'all requirements is satisfied' do
+        describe 'all requirements are satisfied' do
           subject { requirements_satisfied }
           it { is_expected.to eq [ true, true, true ] }
         end
@@ -103,7 +104,7 @@ describe 'an app for irrigating fields using 3 actuators' do
   describe 'adding 10 hosts' do
     before do
       10.times do
-        create_irrigator_that_is_a_ecosystem_host(ontology)
+        loader.create_ecosystem_host
       end
       ontology.refresh
     end

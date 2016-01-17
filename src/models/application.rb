@@ -22,6 +22,10 @@ class Application
     questions.select { |q| not q.has_answer? }
   end
 
+  def question_with_text(text)
+    questions.find { |q| q.text == text }
+  end
+
   def requirements
     list = repo.query([nil, RDF.type, QV.Requirement]).map { |s| s.subject }
     list.map { |node| Requirement.new(node, repo) }

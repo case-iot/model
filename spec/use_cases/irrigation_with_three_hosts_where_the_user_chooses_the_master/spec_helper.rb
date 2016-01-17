@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-class IrrigationFor3HostsLoader
+class IrrigationFor3HostsWithUserQuestionLoader
   def initialize(ontology)
     @ontology = ontology
   end
