@@ -100,4 +100,29 @@ describe 'an app for irrigating fields using 3 actuators where the user chooses 
       end
     end
   end
+
+  describe 'adding 10 hosts' do
+    before do
+      9.times { loader.create_ecosystem_host }
+    end
+    let!(:master) { loader.create_ecosystem_host }
+    before { ontology.refresh }
+
+    describe 'there are 10 options in the question' do
+      subject { answer.options.size }
+      it do
+        is_expected.to eq 10
+      end
+    end
+
+    describe 'choosing the master' do
+      before { answer.selected = master.node }
+      before { ontology.refresh }
+
+      describe 'there are 36 possible deployment plans' do
+        subject { deployment_plans.size }
+        it { is_expected.to eq 36 }
+      end
+    end
+  end
 end

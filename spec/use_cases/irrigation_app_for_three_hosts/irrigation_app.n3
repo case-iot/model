@@ -1,4 +1,10 @@
-# app for controlling the thermostat
+# this is a model for an app that deploys three packages
+# to three different irrigators that are ecosystem hosts.
+# one of the irrigators is the master, the other two are
+# slaves.
+#
+# the model generates all the possible combinations of the
+# master and slaves.
 
 @prefix case: <http://matus.tomlein.org/case/>.
 @prefix local: <http://102.12.124.12/>.

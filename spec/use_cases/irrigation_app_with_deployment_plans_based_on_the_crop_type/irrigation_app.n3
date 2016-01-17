@@ -1,0 +1,127 @@
+# an app that has different requirements and deployment plans based on the
+# crop type chosen by the user
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+local:cropType a case:Question;
+  case:text "What is the crop type?";
+  case:options ( "Cereals" "Wine" );
+  case:replyType case:Select.
+
+local:app a case:Application;
+  case:name "Irrigator";
+  case:description "An app for irrigating fields of various crops".
+
+{
+  [ case:answers local:cropType; case:selected "Wine" ].
+} => {
+  local:wineDevicesReq a case:Requirement;
+    case:description "Irrigator and sensors for wine needed".
+}.
+
+{
+  [ case:answers local:cropType; case:selected "Cereals" ].
+} => {
+  local:cerealDevicesReq a case:Requirement;
+    case:description "Irrigator and sensors for cereals needed".
+}.
+
+{
+  [ case:answers local:cropType; case:selected "Wine" ].
+
+  ?sprinkler a case:Irrigator;
+    case:irrigatorType case:sprinkler.
+  ?moistureSensor a case:Sensor;
+    case:sensorType case:moistureSensor.
+} => {
+  local:wineDevicesReq case:satisfied true.
+
+  [ case:storedWineDevices [
+    case:sprinkler ?sprinkler;
+    case:moistureSensor ?moistureSensor ] ].
+}.
+
+{
+  [ case:answers local:cropType; case:selected "Cereals" ].
+
+  ?sprinkler1 a case:Irrigator; case:irrigatorType case:centralPivot.
+  ?sprinkler2 a case:Irrigator; case:irrigatorType case:centralPivot.
+  ?moistureSensor a case:Sensor; case:sensorType case:moistureSensor.
+
+  ?sprinkler1 log:notEqualTo ?sprinkler2.
+} => {
+  local:cerealDevicesReq case:satisfied true.
+
+  [ case:storedCerealsDevices [
+    case:sprinkler ?sprinkler1;
+    case:sprinkler ?sprinkler2;
+    case:moistureSensor ?moistureSensor ] ].
+}.
+
+{
+  local:cerealDevicesReq case:satisfied true.
+
+  [ case:storedCerealsDevices [
+    case:sprinkler ?sprinkler1;
+    case:sprinkler ?sprinkler2;
+    case:moistureSensor ?moistureSensor ] ].
+
+  ?sprinkler1 log:notEqualTo ?sprinkler2.
+} => {
+  local:app case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+      case:description "Irrigation of cereals";
+
+      case:hasDeploymentPlan [
+        a case:DeploymentPlan;
+        case:host ?sprinkler1;
+        case:arguments [
+          case:sprinkler ?sprinkler2;
+          case:moistureSensor ?moistureSensor ]
+      ];
+
+      case:hasDeploymentPlan [
+        a case:DeploymentPlan;
+        case:host ?sprinkler2;
+        case:arguments [
+          case:sprinkler ?sprinkler1;
+          case:moistureSensor ?moistureSensor ]
+      ];
+
+      case:capability [
+        a case:Irrigation;
+        case:description "Field irrigation";
+        case:cropType "Cereals";
+        case:actuator ?sprinkler1;
+        case:actuator ?sprinkler2;
+        case:sensor ?moistureSensor ]
+  ].
+}.
+
+{
+  local:wineDevicesReq case:satisfied true.
+
+  [ case:storedWineDevices [
+      case:sprinkler ?sprinkler;
+      case:moistureSensor ?moistureSensor
+    ] ].
+} => {
+  local:app case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+    case:description "Irrigation of wine";
+    case:host ?sprinkler;
+    case:arguments [
+      case:moistureSensor ?moistureSensor ];
+    case:capability [
+      a case:Irrigation;
+      case:description "Field irrigation";
+      case:cropType "Wine";
+      case:actuator ?sprinkler;
+      case:sensor ?moistureSensor ];
+    case:requires [ a case:ControlPermission; case:for ?sprinkler ];
+    case:requires [ a case:ReadPermission; case:for ?moistureSensor ]
+  ].
+}.
