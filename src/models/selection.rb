@@ -22,6 +22,11 @@ class Selection
   end
 
   def selected=(value)
-    query.set_value(LV.selected, value)
+    # in case it is an array, store all the answers
+    if value.is_a? Array
+      value.each { |v| query.set_value(LV.selected, v, false) }
+    else
+      query.set_value(LV.selected, value)
+    end
   end
 end

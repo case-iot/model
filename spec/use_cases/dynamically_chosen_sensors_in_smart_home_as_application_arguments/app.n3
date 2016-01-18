@@ -1,0 +1,49 @@
+# this is an app for monitoring the movement in the
+# house.
+# first it creates a question asking user to choose from
+# the available rooms, then it creates another question
+# asking user to choose the sensors to use.
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+
+{
+  ?sensor a case:Sensor;
+    case:locatedAt [ case:locationName ?location ];
+    case:senses case:movement.
+} => {
+  local:roomQuestion a case:Question;
+    case:text "Which rooms do you want to monitor?";
+    case:option ?location;
+    case:replyType case:Select.
+}.
+
+{
+  [ case:answers local:roomQuestion; case:selected ?room ].
+
+  ?sensor a case:Sensor;
+    case:locatedAt [ case:locationName ?room ];
+    case:senses case:movement.
+} => {
+  local:sensorQuestion a case:Question;
+    case:text "Which sensors do you want to use?";
+    case:option ?sensor;
+    case:replyType case:Select.
+}.
+
+local:app a case:Application;
+  case:name "MovementSense";
+  case:description "An application for sensing and logging the movement in the house.".
+
+{
+  [ case:answers local:sensorQuestion;
+      case:selected ?sensor ].
+} => {
+  local:app case:hasDeploymentPlan local:deploymentPlan.
+
+  local:deploymentPlan a case:DeploymentPlan;
+    case:arguments local:deploymentPlanArguments.
+
+  local:deploymentPlanArguments case:sensor ?sensor.
+}.
