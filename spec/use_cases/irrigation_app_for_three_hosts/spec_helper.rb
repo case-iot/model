@@ -17,7 +17,7 @@ class IrrigationFor3HostsLoader
         LV.Irrigator,
         LV.EcosystemHost
       ],
-      LV.manufacturer_name => 'Mrkvicka',
+      LV.manufacturerName => 'Mrkvicka',
       LV.description => i.to_s
     }, @ontology)
 

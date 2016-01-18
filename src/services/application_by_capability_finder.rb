@@ -13,7 +13,9 @@ class ApplicationByCapabilityFinder
     })
 
     solutions.map do |solution|
-      Application.new(solution[:application], @ontology)
+      solution[:application]
+    end.uniq.map do |node|
+      Application.new(node, @ontology)
     end
   end
 

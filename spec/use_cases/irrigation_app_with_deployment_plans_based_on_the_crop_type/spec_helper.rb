@@ -12,7 +12,7 @@ class IrrigationAppWithDeploymentBasedOnTheCropTypeLoader < UseCaseLoader
         LV.Irrigator,
         LV.EcosystemHost
       ],
-      LV.manufacturer_name => 'Mrkvicka',
+      LV.manufacturerName => 'Mrkvicka',
       LV.irrigatorType => LV.sprinkler,
       LV.description => i.to_s
     }, @ontology)
@@ -27,7 +27,7 @@ class IrrigationAppWithDeploymentBasedOnTheCropTypeLoader < UseCaseLoader
         LV.Irrigator,
         LV.EcosystemHost
       ],
-      LV.manufacturer_name => 'Mrkvicka',
+      LV.manufacturerName => 'Mrkvicka',
       LV.irrigatorType => LV.centralPivot,
       LV.description => i.to_s
     }, @ontology)

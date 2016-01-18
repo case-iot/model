@@ -6,7 +6,11 @@ class Application
   end
 
   def name
-    query.value(RDF::Vocab::FOAF.name)
+    if query.value_exists?(RDF::Vocab::FOAF.name)
+      query.value(RDF::Vocab::FOAF.name)
+    else
+      query.value(LV.name)
+    end
   end
 
   def description

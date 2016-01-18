@@ -1,0 +1,127 @@
+# this model contains definitions of several applications with different
+# capabilities
+
+@prefix case: <http://matus.tomlein.org/case/>.
+@prefix local: <http://102.12.124.12/>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#>.
+
+local:wineApp a case:Application;
+  case:name "WineIrrigator";
+  case:description "An app for wine irrigation".
+
+{
+  ?sprinkler a case:Irrigator;
+    case:irrigatorType case:sprinkler.
+  ?moistureSensor a case:Sensor;
+    case:sensorType case:moistureSensor.
+} => {
+  local:wineApp case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+
+    case:capability [
+      a case:Irrigation;
+      case:description "Field irrigation";
+      case:cropType "Wine";
+      case:actuator ?sprinkler;
+      case:sensor ?moistureSensor ]
+  ].
+}.
+
+local:cerealsApp a case:Application;
+  case:name "CerealsIrrigator";
+  case:description "An app for cereals irrigation".
+
+{
+  ?irrigator a case:Irrigator;
+    case:irrigatorType case:centralPivot.
+  ?moistureSensor a case:Sensor;
+    case:sensorType case:moistureSensor.
+} => {
+  local:cerealsApp case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+
+    case:capability [
+      a case:Irrigation;
+      case:description "Field irrigation";
+      case:cropType "Cereals";
+      case:actuator ?irrigator;
+      case:sensor ?moistureSensor ]
+  ].
+}.
+
+local:grassApp a case:Application;
+  case:name "GrassIrrigator";
+  case:description "An app for grass irrigation".
+
+{
+  ?sprinkler a case:Irrigator;
+    case:irrigatorType case:sprinkler.
+  ?phSensor a case:Sensor;
+    case:sensorType case:phSensor.
+} => {
+  local:grassApp case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+
+    case:capability [
+      a case:Irrigation;
+      case:description "Field irrigation";
+      case:cropType "Grass";
+      case:actuator ?sprinkler;
+      case:sensor ?phSensor ]
+  ].
+}.
+
+local:kitchenLightApp
+  a case:Application;
+  case:name "LightMovement";
+  case:description "An app that turns the light on when there is a movement".
+
+{
+  ?sensor a case:Device;
+    a case:Sensor;
+    case:senses case:movement;
+    case:locatedAt [ case:locationName "Kitchen" ].
+
+  ?light a case:Device;
+    a case:Light;
+    case:locatedAt [ case:locationName "Kitchen" ].
+} => {
+  local:kitchenLightApp case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+
+    case:capability
+      [ a case:Alarm;
+        case:description "Blinks the lights when there is movement";
+        case:locationName "Kitchen";
+        case:actuator ?light;
+        case:sensor ?sensor ]
+  ].
+}.
+
+local:bedroomFireAlarm
+  a case:Application;
+  case:name "LightFire";
+  case:description "An app that turns the light on when there is a movement".
+
+{
+  ?sensor a case:Device;
+    a case:Sensor;
+    case:senses case:smoke;
+    case:locatedAt [ case:locationName "Bedroom" ].
+
+  ?light a case:Device;
+    a case:Light;
+    case:locatedAt [ case:locationName "Bedroom" ].
+} => {
+  local:bedroomFireAlarm case:hasDeploymentPlan [
+    a case:DeploymentPlan;
+
+    case:capability
+      [ a case:Alarm;
+        case:description "Fire alarm in case of smoke";
+        case:locationName "Bedroom";
+        case:actuator ?light;
+        case:sensor ?sensor ]
+  ].
+}.

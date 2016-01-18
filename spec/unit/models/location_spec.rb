@@ -6,7 +6,7 @@ describe Location do
       # ANSWER
       r << [:location, RDF.type, QV.answer_type]
       r << [:location, RDF.type, QV.location]
-      r << [:location, LV.location_name, 'Living Room']
+      r << [:location, LV.locationName, 'Living Room']
     end
   end
 

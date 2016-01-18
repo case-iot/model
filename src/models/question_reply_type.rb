@@ -1,6 +1,6 @@
 class QuestionReplyType
   def self.to_sym(query)
-    case query.value(QV.reply_type)
+    case query.value(QV.replyType)
     when QV.Location
       :location
     when QV.Temperature

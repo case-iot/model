@@ -13,9 +13,9 @@ describe Ontology do
 
     # DEVICES
     repo << [:dev1, RDF.type, LV.Device]
-    repo << [:dev1, LV.manufacturer_name, 'Grundfos']
+    repo << [:dev1, LV.manufacturerName, 'Grundfos']
     repo << [:dev2, RDF.type, LV.Device]
-    repo << [:dev2, LV.manufacturer_name, 'Danfoss']
+    repo << [:dev2, LV.manufacturerName, 'Danfoss']
   end
 
   context '#applications' do

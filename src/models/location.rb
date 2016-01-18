@@ -8,10 +8,10 @@ class Location
   end
 
   def name
-    query.value(LV.location_name)
+    query.value(LV.locationName)
   end
 
   def name=(value)
-    query.set_value(LV.location_name, value)
+    query.set_value(LV.locationName, value)
   end
 end

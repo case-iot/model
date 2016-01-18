@@ -6,8 +6,8 @@
 local:light a case:Device;
   a case:Light;
   case:turn_on_url local:turn_on;
-  case:located_at [
+  case:locatedAt [
     a case:Location;
-    case:location_name "Kitchen"
+    case:locationName "Kitchen"
   ];
-  case:manufacturer_name "Philips".
+  case:manufacturerName "Philips".

@@ -19,10 +19,10 @@ local:movementSensorRequirement a case:Requirement;
   ?sensor a case:Device;
     a case:Sensor;
     case:senses case:movement;
-    case:located_at [ case:location_name ?place ].
+    case:locatedAt [ case:locationName ?place ].
 
   ?answer case:answers local:question;
-    case:location_name ?place.
+    case:locationName ?place.
 } => {
   local:movementSensorRequirement case:satisfied true.
 
@@ -35,10 +35,10 @@ local:lightRequirement a case:Requirement;
 {
   ?light a case:Device;
     a case:Light;
-    case:located_at [ case:location_name ?place ].
+    case:locatedAt [ case:locationName ?place ].
 
   ?answer case:answers local:question;
-    case:location_name ?place.
+    case:locationName ?place.
 } => {
   local:lightRequirement case:satisfied true.
 
@@ -56,7 +56,7 @@ local:lightRequirement a case:Requirement;
   ?sensor case:subscribe_url ?subscribe_url.
 
   ?answer case:answers local:question;
-    case:location_name ?place.
+    case:locationName ?place.
 } => {
   local:app case:hasDeploymentPlan [
     a case:DeploymentPlan;

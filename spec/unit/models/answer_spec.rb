@@ -5,11 +5,11 @@ describe Answer do
     RDF::Repository.new do |r|
       # DEVICE
       r << [:dev, RDF.type, LV.Device]
-      r << [:dev, LV.manufacturer_name, 'Grundfos']
-      r << [:dev, LV.located_at, :device_location]
+      r << [:dev, LV.manufacturerName, 'Grundfos']
+      r << [:dev, LV.locatedAt, :device_location]
       # QUESTION
       r << [:device_location, RDF.type, QV.question_type]
-      r << [:device_location, QV.reply_type, QV.Location]
+      r << [:device_location, QV.replyType, QV.Location]
       r << [:device_location, QV.location_of, :dev]
       r << [:device_location, QV.text, 'Where is the thing?']
       # ANSWER
@@ -17,7 +17,7 @@ describe Answer do
       r << [:answer, RDF.type, QV.answer_type]
       r << [:answer, QV.answers, :device_location]
       r << [:answer, RDF.type, QV.Location]
-      r << [:answer, LV.location_name, 'Living Room']
+      r << [:answer, LV.locationName, 'Living Room']
     end
   end
 

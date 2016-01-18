@@ -16,10 +16,10 @@ describe NodeBuilder do
             LV.Irrigator,
             LV.EcosystemHost
           ],
-          LV.manufacturer_name => 'Apple',
+          LV.manufacturerName => 'Apple',
           LV.description => 'Insanely great',
-          LV.located_at => {
-            LV.location_name => 'Cupertino'
+          LV.locatedAt => {
+            LV.locationName => 'Cupertino'
           }
         },
         repo)

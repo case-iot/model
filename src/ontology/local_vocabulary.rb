@@ -5,8 +5,8 @@ class LocalVocabulary
     uri_for(name)
   end
 
-  def self.located_at
-    uri_for('locatedAt')
+  def self.name
+    uri_for('name')
   end
 
   def self.question_type
@@ -15,10 +15,6 @@ class LocalVocabulary
 
   def self.answer_type
     uri_for('answer')
-  end
-
-  def self.reply_type
-    uri_for('replyType')
   end
 
   def self.uri_for(name)

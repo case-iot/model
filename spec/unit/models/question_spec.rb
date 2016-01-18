@@ -6,10 +6,10 @@ describe Question do
       r << [:a, RDF.type, LV.Application]
       r << [:device_location, RDF.type, QV.question_type]
       r << [:device_location, QV.text, 'Where is the thing?']
-      r << [:device_location, QV.reply_type, QV.Location]
+      r << [:device_location, QV.replyType, QV.Location]
       r << [:device_location, QV.location_of, :device]
       r << [:dev, RDF.type, LV.Device]
-      r << [:dev, LV.manufacturer_name, 'Apple']
+      r << [:dev, LV.manufacturerName, 'Apple']
     end
   end
 

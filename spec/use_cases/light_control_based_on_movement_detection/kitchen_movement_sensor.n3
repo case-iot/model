@@ -7,8 +7,8 @@ local:sensor a case:Device;
   a case:Sensor;
   case:senses case:movement;
   case:subscribe_url local:subscribe;
-  case:located_at [
+  case:locatedAt [
     a case:Location;
-    case:location_name "Kitchen"
+    case:locationName "Kitchen"
   ];
-  case:manufacturer_name "Panasonic".
+  case:manufacturerName "Panasonic".

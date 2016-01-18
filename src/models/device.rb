@@ -6,7 +6,7 @@ class Device
   end
 
   def manufacturer_name
-    query.value(LV.manufacturer_name)
+    query.value(LV.manufacturerName)
   end
 
   def description
@@ -14,7 +14,7 @@ class Device
   end
 
   def location
-    node = query.value(LV.located_at)
+    node = query.value(LV.locatedAt)
     return nil if node.nil?
 
     Location.new(node, query.repository)

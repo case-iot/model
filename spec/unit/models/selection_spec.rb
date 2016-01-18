@@ -6,7 +6,7 @@ describe Question do
       r << [:a, RDF.type, QV.Application]
       r << [:question, RDF.type, QV.question_type]
       r << [:question, QV.text, 'Are you OK?']
-      r << [:question, QV.reply_type, QV.Select]
+      r << [:question, QV.replyType, QV.Select]
     end
   end
 
