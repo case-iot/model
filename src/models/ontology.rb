@@ -5,6 +5,7 @@ require_relative '../services/repository_proxy'
 
 class Ontology
   attr_reader :repository
+
   include RepositoryProxy
 
   def self.from_n3(n3_input)
