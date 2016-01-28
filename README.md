@@ -8,8 +8,8 @@ Supplementary evaluation for the paper **Semantic Model of Variability and Capab
 
 # Browsing the sample scenarios
 
-To investigate the tested application models and scenarios, see the folder
-[spec/use_cases](spec/use_cases).
+To investigate the tested application models and scenarios, see the [spec](spec)
+folder.
 
 # Installation
 
@@ -25,3 +25,8 @@ To investigate the tested application models and scenarios, see the folder
 # Running the specs
 
 To run the tests, simply execute `rspec` in the folder of this repository.
+
+# Source code
+
+This repository only contains the use case tests, for the source code and the unit
+tests, see [https://github.com/case-iot/app_model](https://github.com/case-iot/app_model)

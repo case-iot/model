@@ -9,3 +9,5 @@ gem 'webmock', '1.22.3'
 gem 'rest-client', '1.8.0'
 gem 'rake', '10.5.0'
 gem 'rspec', '3.4.0'
+
+gem 'case_model', '0.0.1'

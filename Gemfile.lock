@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.4.0)
+    case_model (0.0.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
@@ -50,6 +51,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  case_model (= 0.0.1)
   rake (= 10.5.0)
   rdf-n3 (= 1.99.0)
   rdf-vocab (= 0.8.7.1)
